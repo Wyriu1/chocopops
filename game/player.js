@@ -1,3 +1,9 @@
+var bullet_player2_material = new THREE.MeshLambertMaterial(
+{
+    color: 0xff00ff,
+    transparent: false
+});
+
 var Player = function(name, color, position, direction) {
 
     this.name = name;
@@ -6,6 +12,7 @@ var Player = function(name, color, position, direction) {
     this.bullets = new Array();
     this.direction = direction;
     this.speed = 0;
+    this.bulletTime = 0;
 
     this.material = new THREE.MeshLambertMaterial({
         color: color,
@@ -36,8 +43,8 @@ Player.prototype.autoMove = function (rotateAngle, moveDistance) {
 
 
 Player.prototype.shoot = function () {
-    if (bulletTime1 + 0.8 < clock.getElapsedTime()) {
-        bullet = new THREE.Mesh(
+    if (this.bulletTime + 0.8 < clock.getElapsedTime()) {
+        let bullet = new THREE.Mesh(
             new THREE.SphereGeometry(2),
             bullet_player2_material);
         scene.add(bullet);
@@ -45,7 +52,7 @@ Player.prototype.shoot = function () {
         bullet.position.y = this.graphic.position.y + 7.5 * Math.sin(this.direction);
         bullet.angle = this.direction;
         this.bullets.push(bullet);
-        bulletTime1 = clock.getElapsedTime();
+        this.bulletTime = clock.getElapsedTime();
     }
 
     var moveDistance = 5;

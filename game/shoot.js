@@ -1,16 +1,11 @@
 var bulletTime1 = 0;
+var touchTime = 0;
 
 var bullet_player1_material = new THREE.MeshLambertMaterial(
 {
     color: 0x00ff00, 
     transparent: false
 });
-
-var bullet_player2_material = new THREE.MeshLambertMaterial(
-    {
-        color: 0xff00ff,
-        transparent: false
-    });
 
 function shoot()
 {
@@ -58,7 +53,7 @@ function bullet_collision()
             i--;
         }
 
-        if (Math.abs(player1.bullets[i].position.x - player2.position.x) <= 10 &&
+        else if (Math.abs(player1.bullets[i].position.x - player2.position.x) <= 10 &&
             Math.abs(player1.bullets[i].position.y - player2.position.y) <= 10)
         {
             scene.remove(player1.bullets[i]);
@@ -82,7 +77,7 @@ function bullet_collision()
             i--;
         }
 
-        if (Math.abs(player2.bullets[i].position.x - player1.position.x) <= 10 &&
+        else if (Math.abs(player2.bullets[i].position.x - player1.position.x) <= 10 &&
             Math.abs(player2.bullets[i].position.y - player1.position.y) <= 10)
         {
             scene.remove(player2.bullets[i]);
@@ -123,6 +118,18 @@ function player_collision()
         player2.graphic.position.y -= y2 - HEIGHT;
     if ( x2 < 0 )
         player2.graphic.position.x -= x2;
+
+    //collision between player and player
+    if (Math.abs(player1.graphic.position.x - player2.graphic.position.x) <= 10 &&
+        Math.abs(player1.graphic.position.y - player2.graphic.position.y) <= 10 &&
+        touchTime + 0.8 < clock.getElapsedTime())
+    {
+        player1.life -= 1;
+        if (player1.life <= 0)
+            player1.dead();
+
+        touchTime = clock.getElapsedTime();
+    }
 }
 
 function player_falling()
@@ -139,10 +146,10 @@ function player_falling()
         element = noGround[i];
 
         if (element) {
-            var tileX = (element[0]) | 0;
-            var tileY = (element[1]) | 0;
-            var mtileX = (element[0] + sizeOfTileX) | 0;
-            var mtileY = (element[1] + sizeOfTileY) | 0;
+            var tileX = (element[0] - sizeOfTileX/2) | 0;
+            var tileY = (element[1] - sizeOfTileX/2) | 0;
+            var mtileX = (element[0] + sizeOfTileX/2) | 0;
+            var mtileY = (element[1] + sizeOfTileY/2) | 0;
         }
 
         if ((x > tileX)
