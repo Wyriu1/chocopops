@@ -4,6 +4,11 @@ function update()
     var moveDistance = 50 * delta; // 200 pixels per second
     var rotateAngle = Math.PI / 2 * delta * 2;   // pi/2 radians (90 degrees) per second
 
+    // player2.turnLeft(rotateAngle);
+    // player2.accelerate(moveDistance);
+
+    player2.autoMove(rotateAngle, moveDistance);
+
     if (keyboard.pressed("left"))
         player1.turnLeft(rotateAngle);
     if (keyboard.pressed("right"))
@@ -13,6 +18,9 @@ function update()
     if (keyboard.pressed("down"))
         player1.decelerate(moveDistance);
 
+
+    player2.shoot();
     player1.move();
+    player2.move();
     controls.update();
 }

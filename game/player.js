@@ -20,6 +20,42 @@ var Player = function(name, color, position, direction) {
     this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), this.direction+(3*Math.PI/2));
 };
 
+// Round trip of the player on the axe, the player should not go out the box (WIDTH, HEIGHT)
+Player.prototype.autoMove = function (rotateAngle, moveDistance) {
+    if (this.position.x >= WIDTH / 3)
+        this.turnLeft(rotateAngle);
+    else if (this.position.x <= -WIDTH / 3)
+        this.turnLeft(rotateAngle);
+    else if (this.position.y >= HEIGHT / 3)
+        this.turnLeft(rotateAngle);
+    else if (this.position.y <= -HEIGHT / 3)
+        this.turnLeft(rotateAngle);
+
+    this.accelerate(moveDistance);
+}
+
+
+Player.prototype.shoot = function () {
+    if (bulletTime1 + 0.8 < clock.getElapsedTime()) {
+        bullet = new THREE.Mesh(
+            new THREE.SphereGeometry(2),
+            bullet_player2_material);
+        scene.add(bullet);
+        bullet.position.x = this.graphic.position.x + 7.5 * Math.cos(this.direction);
+        bullet.position.y = this.graphic.position.y + 7.5 * Math.sin(this.direction);
+        bullet.angle = this.direction;
+        this.bullets.push(bullet);
+        bulletTime1 = clock.getElapsedTime();
+    }
+
+    var moveDistance = 5;
+
+    for (var i = 0; i < this.bullets.length; i++)
+    {
+        this.bullets[i].position.x += moveDistance * Math.cos(this.bullets[i].angle);
+        this.bullets[i].position.y += moveDistance * Math.sin(this.bullets[i].angle);
+    }
+}
 Player.prototype.dead = function () {
     this.graphic.position.z = this.graphic.position.z-0.1;
         //Nettoyage de la div container
@@ -51,8 +87,8 @@ Player.prototype.displayInfo = function () {
 }
 
 Player.prototype.turnRight = function (angle) {
-    this.direction += angle;
-    this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), +angle);
+    this.direction -= angle;
+    this.graphic.rotateOnAxis(new THREE.Vector3(0,0,1), -angle);
 };
 
 Player.prototype.turnLeft = function (angle) {
